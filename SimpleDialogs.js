@@ -54,7 +54,7 @@ public class SimpleDialogManager {
 				
 				if(currentDlg.style == null) currentDlg.style = new GUIStyle();
 				if(currentDlg.textWidth == 0) currentDlg.textWidth = 400;
-				if(currentDlg.textHeight == 0) currentDlg.textHeight = currentDlg.style.CalcHeight(new GUIContent(currentDlg.text), currentDlg.textWidth) * 2;
+				if(currentDlg.textHeight == 0) currentDlg.textHeight = (currentDlg.style.CalcHeight(new GUIContent(currentDlg.text), currentDlg.textWidth) * 600) / Screen.height;
 				GUI.DrawTexture(ResizeGUI(Rect(400 - ((currentDlg.textWidth+10)/2), 300 - ((currentDlg.textHeight+10)/2), currentDlg.textWidth+10, currentDlg.textHeight+10)), currentDlg.background);
 				GUI.Label(ResizeGUI(Rect(400 - (currentDlg.textWidth/2), 300 - (currentDlg.textHeight/2), currentDlg.textWidth, currentDlg.textHeight)), currentDlg.text.Substring(0, currentDlg.currentTextChar), currentDlg.style);
 			}

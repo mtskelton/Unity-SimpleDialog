@@ -6,6 +6,7 @@ public class SimpleDialog {
 	var callback:Function = null;
 	var background:Texture = null;
 	var style:GUIStyle = null;
+	var portrait:Texture = null;
 
 	// Used on the "text" dialog type to create the typewriter effect
 	var textWidth:int = 0;
@@ -37,6 +38,18 @@ public class SimpleDialogManager {
 	public static function AddTextDialog(msg:String) {
 		AddTextDialog(msg, null, null, null);
 	}	
+
+	public static function AddCharacterTextDialog(msg:String, callback:Function, style:GUIStyle, background:Texture, portrait:Texture) {
+		var dlg:SimpleDialog = new SimpleDialog();
+		dlg.type = "text";
+		dlg.text = msg;
+		dlg.callback = callback;
+		dlg.background = background;
+		dlg.style = style;
+		dlg.portrait = portrait;
+		dialogs.Add(dlg);
+	}
+	
 	public static function OnGUI() {
 		if(currentDlg == null && dialogs.length > 0) {
 			currentDlg = dialogs[0] as SimpleDialog;
@@ -55,6 +68,12 @@ public class SimpleDialogManager {
 				if(currentDlg.style == null) currentDlg.style = new GUIStyle();
 				if(currentDlg.textWidth == 0) currentDlg.textWidth = 400;
 				if(currentDlg.textHeight == 0) currentDlg.textHeight = (currentDlg.style.CalcHeight(new GUIContent(currentDlg.text), currentDlg.textWidth) * 600) / Screen.height;
+				
+				if(currentDlg.portrait != null) {
+					var a:float = (currentDlg.portrait.width * 1.0f) / (currentDlg.portrait.height * 1.0f);
+					GUI.DrawTexture(ResizeGUI(Rect(400 - ((currentDlg.textWidth+10)/2), 200 - ((currentDlg.textHeight+10)/2), 100*a, 100)), currentDlg.portrait);
+				}
+				
 				GUI.DrawTexture(ResizeGUI(Rect(400 - ((currentDlg.textWidth+10)/2), 300 - ((currentDlg.textHeight+10)/2), currentDlg.textWidth+10, currentDlg.textHeight+10)), currentDlg.background);
 				GUI.Label(ResizeGUI(Rect(400 - (currentDlg.textWidth/2), 300 - (currentDlg.textHeight/2), currentDlg.textWidth, currentDlg.textHeight)), currentDlg.text.Substring(0, currentDlg.currentTextChar), currentDlg.style);
 			}

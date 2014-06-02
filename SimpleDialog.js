@@ -9,8 +9,8 @@ public class SimpleDialog {
 	var portrait:Texture = null;
 
 	// Used on the "text" dialog type to create the typewriter effect
-	var textWidth:int = 0;
-	var textHeight:int = 0;
+	var textWidth:float = 0;
+	var textHeight:float = 0;
 	var currentTextChar:int = 0;
 	var lastTick:float = 0;
 }
@@ -19,6 +19,7 @@ public class SimpleDialog {
 public class SimpleDialogManager {
 	private static var dialogs:Array = new Array(); // Our queue of dialogs
 	private static var currentDlg:SimpleDialog = null;
+	private static var border:float = 0.2f;
 
 	public static function AddTextDialog(msg:String, callback:Function, style:GUIStyle, background:Texture) {
 		var dlg:SimpleDialog = new SimpleDialog();
@@ -66,16 +67,25 @@ public class SimpleDialogManager {
 				}
 				
 				if(currentDlg.style == null) currentDlg.style = new GUIStyle();
-				if(currentDlg.textWidth == 0) currentDlg.textWidth = 400;
-				if(currentDlg.textHeight == 0) currentDlg.textHeight = (currentDlg.style.CalcHeight(new GUIContent(currentDlg.text), currentDlg.textWidth) * 600) / Screen.height;
-				
-				if(currentDlg.portrait != null) {
-					var a:float = (currentDlg.portrait.width * 1.0f) / (currentDlg.portrait.height * 1.0f);
-					GUI.DrawTexture(ResizeGUI(Rect(400 - ((currentDlg.textWidth+10)/2), 200 - ((currentDlg.textHeight+10)/2), 100*a, 100)), currentDlg.portrait);
+				if(currentDlg.textWidth == 0) currentDlg.textWidth = 1.5f;
+				if(currentDlg.textHeight == 0) {
+					currentDlg.textHeight = SimpleDraw.CalcTextHeight(currentDlg.text, currentDlg.textWidth, currentDlg.style);
 				}
 				
-				GUI.DrawTexture(ResizeGUI(Rect(400 - ((currentDlg.textWidth+10)/2), 300 - ((currentDlg.textHeight+10)/2), currentDlg.textWidth+10, currentDlg.textHeight+10)), currentDlg.background);
-				GUI.Label(ResizeGUI(Rect(400 - (currentDlg.textWidth/2), 300 - (currentDlg.textHeight/2), currentDlg.textWidth, currentDlg.textHeight)), currentDlg.text.Substring(0, currentDlg.currentTextChar), currentDlg.style);
+				/*if(currentDlg.textWidth == 0) currentDlg.textWidth = 400;
+				if(currentDlg.textHeight == 0) currentDlg.textHeight = (currentDlg.style.CalcHeight(new GUIContent(currentDlg.text + "\n"), currentDlg.textWidth) * 600) / Screen.height;*/
+				
+				var offset:float = 0.0f;
+				if(currentDlg.portrait != null) {
+					SimpleDraw.DrawTexture(-0.9f, -0.25f, 0.5f, 0.5f, currentDlg.portrait);
+					offset = 0.5f;
+				}
+				
+				/*GUI.DrawTexture(ResizeGUI(Rect(400 - ((currentDlg.textWidth+10)/2), 300 - ((currentDlg.textHeight+10)/2), currentDlg.textWidth+10, currentDlg.textHeight+10)), currentDlg.background);
+				GUI.Label(ResizeGUI(Rect(400 - (currentDlg.textWidth/2), 300 - (currentDlg.textHeight/2), currentDlg.textWidth, currentDlg.textHeight)), currentDlg.text.Substring(0, currentDlg.currentTextChar), currentDlg.style);*/
+				
+				SimpleDraw.FillRect(((0.0-(currentDlg.textWidth/2))-(border/2)) + offset, (0.0-(currentDlg.textHeight/2))-(border/2), currentDlg.textWidth+border, currentDlg.textHeight+border);
+				SimpleDraw.DrawText((0.0-(currentDlg.textWidth/2)) + offset, 0.0-(currentDlg.textHeight/2), currentDlg.textWidth, currentDlg.textHeight, currentDlg.text.Substring(0, currentDlg.currentTextChar), currentDlg.style);
 			}
 		}
 	}
